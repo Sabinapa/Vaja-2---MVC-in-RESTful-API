@@ -17,24 +17,55 @@ if(!isset($_GET["id"])){
 	echo "Manjkajoči parametri.";
 	die();
 }
+
+if (!isset($_SESSION['viewed_ads'])) {
+    $_SESSION['viewed_ads'] = array(); //seja za shranjevanje ogledov za vsakega posameznega obiskovalca
+}
+
+
 $id = $_GET["id"];
 $ad = get_ad($id);
 if($ad == null){
 	echo "Oglas ne obstaja.";
 	die();
 }
-//Base64 koda za sliko (hexadecimalni zapis byte-ov iz datoteke)
-$img_data = base64_encode($ad->image);
-?>
-	<div class="ad">
-		<h4><?php echo $ad->title;?></h4>
-		<p><?php echo $ad->description;?></p>
-		<img src="data:image/jpg;base64, <?php echo $img_data;?>" width="400"/>
-		<p>Objavil: <?php echo $ad->username; ?></p>
-		<a href="index.php"><button>Nazaj</button></a>
-	</div>
-	<hr/>
-	<?php
 
+global $conn;
+if (!in_array($id, $_SESSION['viewed_ads'])) { //preveri če obiskovalec že pogledo oglas
+    $_SESSION['viewed_ads'][] = $id; // če ta id == obiskovalec se ni ogledo se doda v sejo ta id
+
+    //Povečamo stevilo ogledov na oglas glede na obiskovalce
+    $query = "UPDATE ads SET views = views + 1 WHERE id = $id";
+    mysqli_query($conn, $query);
+}
+
+
+//Base64 koda za sliko (hexadecimalni zapis byte-ov iz datoteke) v string
+$img_data = base64_encode($ad->image)
+?>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card my-3">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <img src="data:image/jpg;base64, <?php echo $img_data;?>" class="card-img" alt="<?php echo $ad->title;?>">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo $ad->title;?></h5>
+                            <p class="card-text"><?php echo $ad->description;?></p>
+                            <p class="card-text"><small class="text-muted">Objavil: <?php echo $ad->username; ?></small></p>
+                            <p class="card-text"><small class="text-muted">Datum objave: <?php echo $ad->created_at; ?></small></p>
+                            <p class="card-text"><small class="text-muted">Ogledov: <?php echo $ad->views; ?></small></p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="index.php" id="ReadMoreButtom" class="btn btn-primary">Nazaj</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php
 include_once('footer.php');
 ?>

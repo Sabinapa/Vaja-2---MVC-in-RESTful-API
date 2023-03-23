@@ -1,0 +1,32 @@
+#ReadMoreButtom
+{
+    background-color: #A099C2;
+    border-color: #A099C2;
+}
+
+#DeleteButtom
+{
+    background-color: #CDB4DB;
+    border-color: #CDB4DB;
+}
+
+#UpdateButttom
+{
+    background-color: #BDE0FE;
+    border-color: #BDE0FE;
+}
+
+#ReadMore
+{
+    padding-top: 5px;
+}
+
+#pdelete
+{
+    padding-left: 20px;
+}
+
+body
+{
+    background-color: #F8F9FA;
+}
