@@ -21,7 +21,7 @@ if (isset($_GET['controller']) && isset($_GET['action'])) {
 	$action     = $_GET['action'];
 } else {
   	// Če uporabnik ni podal svoje zahteve v pravilni obliki, ga preusmerimo na privzeto akcijo
-	$controller = 'ads';
+	$controller = 'users';
 	$action     = 'index';
 }
 
