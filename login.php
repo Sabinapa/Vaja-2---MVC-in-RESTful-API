@@ -8,7 +8,15 @@ function validate_login($username, $password){
 	$query = "SELECT * FROM users WHERE username='$username' AND password='$pass'";
 	$res = $conn->query($query);
 	if($user_obj = $res->fetch_object()){ //ce imamo zadetek vrnemo id
-		return $user_obj->id;
+		if($user_obj -> administrator == 1)
+        {
+            $_SESSION["administrator"] = 1;
+        }
+        else
+        {
+            $_SESSION["administrator"] = 0;
+        }
+        return $user_obj->id;
 	}
 	return -1;
 }

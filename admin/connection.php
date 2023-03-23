@@ -10,7 +10,7 @@ class Db
   {
     if (!isset(self::$instance)) {
 
-      self::$instance = mysqli_connect("localhost", "root", "", "vaja1");
+      self::$instance = mysqli_connect("localhost", "root", "", "vaja2");
       self::$instance->set_charset("UTF8");
     }
     return self::$instance;
