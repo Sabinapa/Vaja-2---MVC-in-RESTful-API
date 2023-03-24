@@ -46,7 +46,8 @@ class users_controller
         // Tukaj bi morali podatke še validirati, preden jih dodamo v bazo
 
         // Pokličemo metodo za ustvarjanje novega oglasa
-        $user = User::insert($_POST["title"], $_POST["description"], $_FILES["image"]);
+        $user = User::insert($_POST["username"], $_POST["password"], $_POST["name"], $_POST["lastname"], $_POST["email"],
+                             $_POST["address"], $_POST["postal_number"],$_POST["tel"], $_POST["administrator"] );
 
         //ko je oglas dodan, imamo v $ad podatke o tem novem oglasu
         //uporabniku lahko pokažemo pogled, ki ga bo obvestil o uspešnosti oddaje oglasa
@@ -74,7 +75,8 @@ class users_controller
         // Naložimo oglas
         $user = User::find($_POST['id']);
         // Pokličemo metodo, ki posodobi obstoječi oglas v bazi
-        $user = $user->update($_POST["title"], $_POST["description"], $_FILES["image"]);
+        $user = $user->update($_POST["username"], $_POST["name"], $_POST["lastname"], $_POST["email"],
+                             $_POST["address"], $_POST["postal_number"],$_POST["tel"], $_POST["administrator"] );
         // Izpišemo pogled s sporočilom o uspehu
         require_once('views/ads/editSuccess.php');
     }

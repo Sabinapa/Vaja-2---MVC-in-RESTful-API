@@ -23,7 +23,7 @@ function call($controller, $action)
 // lahko definirali tudi pravice (ustrezno zmanjšali nabor akcij pod določenimi pogoji)
 $controllers = array(
   'pages' => ['error', 'api'],
-  'ads' => ['index', 'show', 'create', 'store', 'edit', 'update', 'delete']
+  'users' => ['index', 'show', 'create', 'store', 'edit', 'update', 'delete']
 );
 
 // Preverimo, če zahteva kliče controller in akcijo iz zgornjega seznama
