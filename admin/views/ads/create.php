@@ -1,5 +1,5 @@
-<h2>Objavi oglas</h2>
-<form action="?controller=ads&action=store" method="POST" enctype="multipart/form-data">
+<h2>Ustvari novega uporabnika</h2>
+<form action="?controller=users&action=store" method="POST" enctype="multipart/form-data">
     <div class="form-group">
         <label>Uporabniško ime *</label>
         <input type="text" class="form-control" name="username" required>

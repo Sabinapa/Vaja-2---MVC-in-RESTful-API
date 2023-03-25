@@ -69,6 +69,7 @@ class User
         $db = Db::getInstance();
         $username = mysqli_real_escape_string($db, $username);
         $password = mysqli_real_escape_string($db, $password);
+        $pass = sha1($password); //zasifriramo geslo
         $name = mysqli_real_escape_string($db, $name);
         $lastname = mysqli_real_escape_string($db, $lastname);
         $email = mysqli_real_escape_string($db, $email);
@@ -79,7 +80,7 @@ class User
         $user_id = $_SESSION["USER_ID"]; // user_id vzamemo iz seje (prijavljen uporabnik)
 
         $query = "INSERT INTO users (username, password, name, lastname, email,address, postal_number, tel, administrator) 
-                  VALUES('$username', '$password', '$name', '$lastname', '$email', '$address', '$postal_number', '$tel', '$administrator');";
+                  VALUES('$username', '$pass', '$name', '$lastname', '$email', '$address', '$postal_number', '$tel', '$administrator');";
         if ($db->query($query)) {
             $id = mysqli_insert_id($db); // preberemo id, ki ga je dobil vstavljen oglas
             return User::find($id); // preberemo nov oglas iz baze in ga vrnemo controllerju
