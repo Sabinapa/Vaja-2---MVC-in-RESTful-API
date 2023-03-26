@@ -39,10 +39,10 @@ if (!in_array($id, $_SESSION['viewed_ads'])) { //preveri če obiskovalec že pog
     mysqli_query($conn, $query);
 }
 
-
 //Base64 koda za sliko (hexadecimalni zapis byte-ov iz datoteke) v string
 $img_data = base64_encode($ad->image)
 ?>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card my-3">
@@ -64,8 +64,28 @@ $img_data = base64_encode($ad->image)
                     </div>
                 </div>
             </div>
+            <?php if (isset($_SESSION['USER_ID'])) { ?>
+                <div id="comment_field">
+                    <h4>Komentarji:</h4>
+                    <div id="comments"></div>
+                    <div class="form-group mt-3">
+                        <label for="commentInput">Vnesi komentar:</label>
+                        <input type="text" class="form-control" id="commentInput">
+                    </div>
+                    <button type="button" class="btn btn-primary" id="publish">Objavi</button>
+                </div>
+            <?php } ?>
         </div>
     </div>
+
+<script>
+
+
+</script>
+
+
+
+
 <?php
 include_once('footer.php');
 ?>
