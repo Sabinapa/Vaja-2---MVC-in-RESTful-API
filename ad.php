@@ -105,27 +105,25 @@ $img_data = base64_encode($ad->image)
             $("#comments").empty();
 
             comments.forEach(function(comment) {
-                var row = $("<tr>").attr("id", "comment-" + comment.id);
+                var commentCard = $("<div>").addClass("card").attr("id", "comment-" + comment.id);
 
-                // Create table cells for the comment content and user ID
-                var contentCell = $("<td>").text(comment.content);
-                var userCell = $("<td>").text(comment.user.username);
+                var cardBody = $("<div>").addClass("card-body");
+                var cardTitle = $("<h5>").addClass("card-title").text(comment.user.username);
+                var cardText = $("<p>").addClass("card-text").text(comment.content);
 
-                row.append(contentCell).append(userCell);
+                cardBody.append(cardTitle).append(cardText);
+
+                commentCard.append(cardBody);
                 //console.log(comment.user.id);
                 //console.log(id);
 
                 if (comment.user.id == id) {
-                    var deleteBtn = $("<button>").addClass("delete_ad_btn").text("Izbriši");
-                    var deleteCell = $("<td>").append(deleteBtn);
-                    row.append(deleteCell);
-                } else {
-                    row.append("<td></td>");
+                    var deleteBtn = $("<button>").addClass("btn btn-danger delete_ad_btn float-end").text("Izbriši");
+                    var deleteCell = $("<div>").addClass("d-flex justify-content-end mb-3").append(deleteBtn);
+                    commentCard.append(deleteCell);
                 }
 
-                row.append(deleteCell);
-
-                $("#comments").append(row);
+                $("#comments").append(commentCard);
             });
         }
 
@@ -149,10 +147,10 @@ $img_data = base64_encode($ad->image)
         }
 
         function deleteClickHandler() {
-            var row = $(this).closest("tr");
-            var id = row.attr("id").substr(8); // odstranimo predpono "comment-"
+            var commentCard = $(this).closest(".card");
+            var id = commentCard.attr("id").substr(8); // odstranimo predpono "comment-"
             deleteComment(id);
-            row.remove();
+            commentCard.remove();
         }
 
         function deleteComment(id)
