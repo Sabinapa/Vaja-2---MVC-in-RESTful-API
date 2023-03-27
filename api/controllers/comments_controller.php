@@ -43,7 +43,7 @@ class comments_controller
     public function store()
     {
         // Store se pokliče z POST, zato so podatki iz obrazca na voljo v $_POST
-        $comment = comment::insert($_POST["user_id"], $_POST["ad_id"], $_POST["conntent"]);
+        $comment = comment::insert($_POST["ad_id"], $_POST["content"]);
         // Vrnemo vstavljen oglas
         echo json_encode($comment);
     }
@@ -71,4 +71,5 @@ class comments_controller
         // Vrnemo podatke iz izbrisanega oglasa
         echo json_encode($comment);
     }
+
 }

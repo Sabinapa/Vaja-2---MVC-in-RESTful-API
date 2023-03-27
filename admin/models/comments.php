@@ -35,7 +35,7 @@ class comment
         $query = "SELECT * FROM comments;"; // pripravimo query
         $res = $db->query($query); // poženemo query
         $comments = array();
-        while ($comments = $res->fetch_object()) {
+        while ($comment = $res->fetch_object()) {
             // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $ads
             array_push($comments, new comment($comment->id, $comment->user_id, $comment->ad_id, $comment->content));
         }
@@ -76,7 +76,7 @@ class comment
         $ad_id = mysqli_real_escape_string($db, $ad_id);
         $content = mysqli_real_escape_string($db, $content);
 
-        $user_id = $_SESSION["USER_ID"]->id; // user_id vzamemo iz seje (prijavljen uporabnik)
+        $user_id = $_SESSION["USER_ID"]; // user_id vzamemo iz seje (prijavljen uporabnik)
 
         $query = "INSERT INTO comments (user_id, ad_id, content) VALUES('$user_id', '$ad_id', '$content');";
         if ($db->query($query)) {

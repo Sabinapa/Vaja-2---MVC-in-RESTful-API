@@ -19,7 +19,7 @@ S pomočjo .htaccess preslikamo URL-je iz /api.php/foo/bar => /api/foo/bar (več
 */
 
 require_once "../admin/connection.php"; //uporabimo povezavo na bazo iz MVC
-require_once "../admin/models/ads.php"; //uporabimo model Ad iz MVC
+require_once "../admin/models/comments.php"; //uporabimo model Ad iz MVC
 require_once "controllers/comments_controller.php"; //vključimo API controller
 
 session_start();
@@ -44,7 +44,7 @@ else
 
 // Najprej potrebujemo 'router', ki bo razpoznal zahtevo in sprožil ustrezne akcije
 // Preverimo, če je v url-ju prva pot 'ads'
-if(!isset($request[0]) || $request[0] != "comements"){
+if(!isset($request[0]) || $request[0] != "comments"){
     echo json_encode((object)["status"=>"404", "message"=>"Not found"]);
     die();
 }
