@@ -53,13 +53,13 @@ switch($method){
     case "GET":
         // Če je v zahtevi nastavljen :id, kličemo akcijo show (en oglas), sicer pa index (vsi oglasi)
         if(isset($request[1])){
-            if($request[1] == "five")
+            if($request[1] == "five") //če five beseda pol
             {
                 $comments_controller->lastFive();
             }
             else
             {
-                $comments_controller->show($request[1]);
+                $comments_controller->show($request[1]); //če index
             }
 
         } else {

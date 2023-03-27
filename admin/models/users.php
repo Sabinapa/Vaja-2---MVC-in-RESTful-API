@@ -45,7 +45,7 @@ class User
         $res = $db->query($query); // poženemo query
         $users = array();
         while ($user = $res->fetch_object()) {
-            // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $ads
+            // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $users
             array_push($users, new User($user->id, $user->username, $user->password, $user->name, $user->lastname, $user->email, $user->address, $user->postal_number, $user->tel, $user->administrator));
         }
         return $users;
@@ -68,7 +68,8 @@ class User
     {
         $db = Db::getInstance();
         $username = mysqli_real_escape_string($db, $username);
-        $password = mysqli_real_escape_string($db, $password);
+        $pass = sha1($password);
+        //$password = mysqli_real_escape_string($db, $password);
         $name = mysqli_real_escape_string($db, $name);
         $lastname = mysqli_real_escape_string($db, $lastname);
         $email = mysqli_real_escape_string($db, $email);
@@ -79,7 +80,7 @@ class User
         $user_id = $_SESSION["USER_ID"]; // user_id vzamemo iz seje (prijavljen uporabnik)
 
         $query = "INSERT INTO users (username, password, name, lastname, email,address, postal_number, tel, administrator) 
-                  VALUES('$username', '$password', '$name', '$lastname', '$email', '$address', '$postal_number', '$tel', '$administrator');";
+                  VALUES('$username', '$pass', '$name', '$lastname', '$email', '$address', '$postal_number', '$tel', '$administrator');";
         if ($db->query($query)) {
             $id = mysqli_insert_id($db); // preberemo id, ki ga je dobil vstavljen oglas
             return User::find($id); // preberemo nov oglas iz baze in ga vrnemo controllerju
@@ -118,6 +119,13 @@ class User
     {
         $db = Db::getInstance();
         $id = mysqli_real_escape_string($db, $this->id);
+
+        $query = "DELETE FROM comments WHERE user_id = '$id'";
+        $db->query($query);
+
+        $query = "DELETE FROM ads WHERE user_id = '$id'";
+        $db->query($query);
+
         $query = "DELETE FROM users WHERE id = '$id'";
         if ($db->query($query)) {
             return true;

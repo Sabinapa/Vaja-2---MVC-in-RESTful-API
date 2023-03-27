@@ -74,7 +74,7 @@ $img_data = base64_encode($ad->image)
             <?php if (isset($_SESSION['USER_ID'])) { ?> <!-- Samo če uporabnik prijavljen lahko komentira -->
                 <div id="comment_field">
                     <h4>Komentarji:</h4>
-                    <div id="comments"></div>
+                    <div id="comments"></div> <!-- Tukaj prikazejo komentarji -->
                     <div class="form-group mt-3">
                         <label for="commentInput">Vnesi komentar:</label>
                         <input type="text" class="form-control" id="commentInput">
@@ -86,17 +86,17 @@ $img_data = base64_encode($ad->image)
     </div>
 
     <script>
-        var id = <?php echo $_SESSION["USER_ID"]; ?>;
-        var userId = <?php echo $ad->user_id; ?>;
+        var id = <?php echo $_SESSION["USER_ID"]; ?>; //pridobimo prijavljeni id od user
+        var userId = <?php echo $ad->user_id; ?>; //pridobimo od oglasa user id
 
-        $(document).ready(async function () {
-            await loadComments();
-            $("#publish").click(createComment)
-            $(".delete_ad_btn").click(deleteClickHandler);
+        $(document).ready(async function () { // stran v celoti naloži.
+            await loadComments(); //ta vrstica kliče funkcijo loadComments(), ki bo asinhrono naložila vse komentarje in jih prikazala na strani.
+            $("#publish").click(createComment) // ta vrstica določa, da se funkcija createComment() kliče, ko uporabnik klikne gumb "Objavi" s podatki, ki jih vnese v obrazec za komentarje
+            $(".delete_ad_btn").click(deleteClickHandler); // ta vrstica določa, da se funkcija deleteClickHandler() kliče, ko uporabnik klikne gumb "Izbriši" pri oglasu, ki ga želi izbrisati.
 
         });
 
-        async function loadComments() {
+        async function loadComments() { //nalozi komentarje
             await $.get("api/index.php/comments/<?php echo $ad->id ?>", renderComments);
             //pri oglasu ovcka prikazali komentarji samo za ta oglas
         }
@@ -105,55 +105,56 @@ $img_data = base64_encode($ad->image)
             $("#comments").empty();
 
             comments.forEach(function(comment) {
+                //novi div z razredoma card in id (komentar oblika + id)
                 var commentCard = $("<div>").addClass("card").attr("id", "comment-" + comment.id);
 
                 var cardBody = $("<div>").addClass("card-body");
-                var cardTitle = $("<h5>").addClass("card-title").text(comment.user.username);
-                var cardText = $("<p>").addClass("card-text").text(comment.content);
+                var cardTitle = $("<h5>").addClass("card-title").text(comment.user.username); //username lastnika komentara oz ki je komentiro
+                var cardText = $("<p>").addClass("card-text").text(comment.content); //vsebina tega komentara
 
-                cardBody.append(cardTitle).append(cardText);
+                cardBody.append(cardTitle).append(cardText); //zdruzitev kartic v eno
 
                 commentCard.append(cardBody);
                 //console.log(comment.user.id);
                 //console.log(id);
 
-                if (comment.user.id == id) {
+                if (comment.user.id == id || userId == id) { //prijavljeni uporabnik == uporabnik komentara || prijavljeni uporabnik == lastnik oglasa
                     var deleteBtn = $("<button>").addClass("btn btn-danger delete_ad_btn float-end").text("Izbriši");
                     var deleteCell = $("<div>").addClass("d-flex justify-content-end mb-3").append(deleteBtn);
                     commentCard.append(deleteCell);
                 }
 
-                $("#comments").append(commentCard);
+                $("#comments").append(commentCard); //doda se kartica v div
             });
         }
 
         function createComment() {
-            // Retrieve the comment content from the input field
+            // Pridobi vsebino iz polja za komentae
             var content = $("#commentInput").val();
 
-            // Create the comment object to be sent to the server
+            // Ustvarjnen objekt ki bo poslan na streznik
             var comment = {
-                ad_id: <?php echo $ad->id ?>, // set the ID of the ad for which the comment is being posted
+                ad_id: <?php echo $ad->id ?>, // id oglasa na katerem vpisemo komentar
                 user_id : <?php echo $_SESSION["USER_ID"]; ?>,
-                content: content // set the content of the comment
+                content: content // vsebina komentarja
             };
 
+            //poslejmo podatke s POST
             $.post('api/index.php/comments/', comment, function (data) {
-                //renderComments(data)
-                loadComments()
+                loadComments() //NALOZI novi komentar avtomasko polek
                 // Clear the input field after the comment has been added
-                $("#commentInput").val("");
+                $("#commentInput").val(""); //počisti polje za vnos
             });
         }
 
         function deleteClickHandler() {
-            var commentCard = $(this).closest(".card");
-            var id = commentCard.attr("id").substr(8); // odstranimo predpono "comment-"
-            deleteComment(id);
-            commentCard.remove();
+            var row = $(this).closest("tr"); //dobimo vrstico kjer klikno uporabnik brisi
+            var id = row.attr("id").substr(8); // odstranimo predpono "comment-"
+            deleteComment(id); //klicemo funkcijo
+            row.remove(); //toto vrrstico zbrisemo
         }
 
-        function deleteComment(id)
+        function deleteComment(id) //sprejme id
         {
             console.log(id);
             $.ajax({
@@ -162,10 +163,7 @@ $img_data = base64_encode($ad->image)
             });
         }
 
-
-
     </script>
-
 
 <?php
 include_once('footer.php');

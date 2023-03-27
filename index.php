@@ -21,16 +21,16 @@ $ads = get_ads();
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <script>
         $(document).ready(async function () {
-            await loadComments();
+            await loadComments(); //nalozi vse komentarje
         });
 
         async function loadComments() {
-            await $.get("api/index.php/comments/five", renderComments5);
+            await $.get("api/index.php/comments/five", renderComments5); //klice funkcijo renderComments5
             //pri oglasu ovcka prikazali komentarji samo za ta oglas
         }
 
         function renderComments5(comments) {
-            comments.forEach(function (comment) {
+            comments.forEach(function (comment) { //skozi celotni array gre vsakega posebaj
                 var commentCard = $("<div>").addClass("card").attr("id", "comment-" + comment.id);
 
                 var cardBody = $("<div>").addClass("card-body");
@@ -39,11 +39,12 @@ $ads = get_ads();
 
                 // Dodajanje povezave do oglasa
                 console.log(comment.ad_id);
+
                 var adLink = $("<a>")
                     //.attr("href", "?controller=ads&action=show&id=" + comment.ad_id)
                     .attr("href", "ad.php?id=" + comment.ad_id)
-                    .text("Oglas");
-                cardBody.append(adLink);
+                    .text("Oglas"); //kliknemo in nam odpre stran v kateri je ta komentar
+                cardBody.append(adLink); //zdruzimo vse to
 
                 cardBody.append(cardTitle).append(cardText);
                 commentCard.append(cardBody);

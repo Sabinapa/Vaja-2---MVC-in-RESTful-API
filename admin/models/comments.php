@@ -36,7 +36,7 @@ class comment
         $res = $db->query($query); // poženemo query
         $comments = array();
         while ($comment = $res->fetch_object()) {
-            // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $ads
+            // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $comments
             array_push($comments, new comment($comment->id, $comment->user_id, $comment->ad_id, $comment->content));
         }
         return $comments;
@@ -55,6 +55,7 @@ class comment
         return null;
     }
 
+    //Metoda ki vrne več komentarjev kot array
     public static function findCommentAds($id)
     {
         $db = Db::getInstance();
@@ -80,14 +81,14 @@ class comment
 
         $query = "INSERT INTO comments (user_id, ad_id, content) VALUES('$user_id', '$ad_id', '$content');";
         if ($db->query($query)) {
-            $id = mysqli_insert_id($db); // preberemo id, ki ga je dobil vstavljen oglas
-            return comment::findCommentAds($id); // preberemo nov oglas iz baze in ga vrnemo controllerju
+            $id = mysqli_insert_id($db); // preberemo id, ki ga je dobil vstavljen komentar
+            return comment::findCommentAds($id); // preberemo nov komentar iz baze in ga vrnemo controllerju
         } else {
             return null; // v primeru napake vrnemo null
         }
     }
 
-    // Metoda, ki izbriše oglas iz baze
+    // Metoda, ki izbriše komentar iz baze
     public function delete()
     {
         $db = Db::getInstance();
@@ -100,6 +101,7 @@ class comment
         }
     }
 
+    //Metoda ki vrača polje zadnjih 5 komentarjev
     public static function lastFive()
     {
         $db = Db::getInstance();

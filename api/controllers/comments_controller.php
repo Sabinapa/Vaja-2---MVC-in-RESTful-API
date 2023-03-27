@@ -19,22 +19,21 @@ class comments_controller
 
     public function index()
     {
-        // Iz modela pidobimo vse oglase
+        // Iz modela pidobimo vse komentarje
         $com = comment::all();
 
-        //izpišemo $ads v JSON formatu
+        //izpišemo $com v JSON formatu
         echo json_encode($com);
     }
-
     public function show($id)
     {
         $com = comment::all();
         $come = array();
-        foreach ($com as $i)
+        foreach ($com as $i) //skozi vsak komenar
         {
-            if($i->ad_id==$id)
+            if($i->ad_id==$id) //preveri če se ujema z IDJEM oglasa ki smo ga prejeli
             {
-                array_push($come, $i);
+                array_push($come, $i); //ČE SE UJEMA ga doda v seznam
             }
         }
         echo json_encode($come);
@@ -65,7 +64,7 @@ class comments_controller
 
     public function delete($id)
     {
-        // Poiščemo in izbrišemo oglas
+        // Poiščemo in izbrišemo komenarje
         $comment = comment::findComment($id);
         $comment->delete();
         // Vrnemo podatke iz izbrisanega oglasa
