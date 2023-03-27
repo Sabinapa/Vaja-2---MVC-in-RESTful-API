@@ -19,12 +19,12 @@ S pomočjo .htaccess preslikamo URL-je iz /api.php/foo/bar => /api/foo/bar (več
 */
 
 require_once "../admin/connection.php"; //uporabimo povezavo na bazo iz MVC
-require_once "../admin/models/ads.php"; //uporabimo model Ad iz MVC
-require_once "controllers/ads_controller.php"; //vključimo API controller
+require_once "../admin/models/comments.php"; //uporabimo model Ad iz MVC
+require_once "controllers/comments_controller.php"; //vključimo API controller
 
 session_start();
 
-$ads_controller = new ads_controller;
+$comments_controller = new comments_controller;
 
 //nastavimo glave odgovora tako, da brskalniku sporočimo, da mu vračamo json
 header('Content-Type: application/json');
@@ -44,7 +44,7 @@ else
 
 // Najprej potrebujemo 'router', ki bo razpoznal zahtevo in sprožil ustrezne akcije
 // Preverimo, če je v url-ju prva pot 'ads'
-if(!isset($request[0]) || $request[0] != "ads"){
+if(!isset($request[0]) || $request[0] != "comments"){
     echo json_encode((object)["status"=>"404", "message"=>"Not found"]);
     die();
 }
@@ -53,13 +53,21 @@ switch($method){
     case "GET":
         // Če je v zahtevi nastavljen :id, kličemo akcijo show (en oglas), sicer pa index (vsi oglasi)
         if(isset($request[1])){
-            $ads_controller->show($request[1]);
+            if($request[1] == "five") //če five beseda pol
+            {
+                $comments_controller->lastFive();
+            }
+            else
+            {
+                $comments_controller->show($request[1]); //če index
+            }
+
         } else {
-            $ads_controller->index();
+            $comments_controller->index();
         }
         break;
-    case "POST": 
-        $ads_controller->store();
+    case "POST":
+        $comments_controller->store();
         break;
     case "PUT": 
         if(!isset($request[1])){
@@ -67,7 +75,7 @@ switch($method){
             echo json_encode((object)["status"=>"500", "message"=>"Invalid parameters"]);
             die();
         }
-        $ads_controller->update($request[1]);
+        $comments_controller->update($request[1]);
         break;
     case "DELETE":
         if(!isset($request[1])){
@@ -75,7 +83,7 @@ switch($method){
             echo json_encode((object)["status"=>"500", "message"=>"Invalid parameters"]);
             die();
         }
-        $ads_controller->delete($request[1]);
+        $comments_controller->delete($request[1]);
         break;
     default: 
         break;

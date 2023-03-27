@@ -74,7 +74,7 @@ class ads_controller
         // Naložimo oglas
         $ad = Ad::find($_POST['id']);
         // Pokličemo metodo, ki posodobi obstoječi oglas v bazi
-        $ad = $ad->update($_POST["title"], $_POST["description"], $_FILES["image"]);
+        $ad = $ad->update($_POST["title"], $_POST["description"], $_FILES["image"],  $_POST["view"]);
         // Izpišemo pogled s sporočilom o uspehu
         require_once('views/ads/editSuccess.php');
     }
