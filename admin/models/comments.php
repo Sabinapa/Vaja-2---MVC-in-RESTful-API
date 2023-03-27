@@ -99,4 +99,17 @@ class comment
             return false;
         }
     }
+
+    public static function lastFive()
+    {
+        $db = Db::getInstance();
+        $query = "SELECT * FROM comments ORDER BY id DESC LIMIT 5;";
+        $res = $db->query($query);
+        $comments = array();
+        while ($comment = $res->fetch_object()) {
+            array_push($comments, new comment($comment->id,$comment->user_id, $comment->ad_id, $comment->content));
+        }
+        return $comments;
+    }
+
 }

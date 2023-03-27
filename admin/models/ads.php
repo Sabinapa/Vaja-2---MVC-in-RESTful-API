@@ -16,17 +16,22 @@ class Ad
     public $id;
     public $title;
     public $description;
-    public $image;
     public $user;
+    public $image;
+    public $created_at;
+    public $views;
+
 
     // Konstruktor
-    public function __construct($id, $title, $description, $image, $user_id)
+    public function __construct($id, $title, $description,$user_id, $image,$created_at, $views )
     {
         $this->id = $id;
         $this->title = $title;
         $this->description = $description;
         $this->image = base64_encode($image); //byte array (blob) zakodiramo v base64 string
         $this->user = User::find($user_id); //naložimo podatke o uporabniku
+        $this->created_at = $created_at;
+        $this->views = $views;
     }
 
     // Metoda, ki iz baze vrne vse oglase
@@ -38,7 +43,7 @@ class Ad
         $ads = array();
         while ($ad = $res->fetch_object()) {
             // Za vsak rezultat iz baze ustvarimo objekt (kličemo konstuktor) in ga dodamo v array $ads
-            array_push($ads, new Ad($ad->id, $ad->title, $ad->description, $ad->image, $ad->user_id));
+            array_push($ads, new Ad($ad->id, $ad->title, $ad->description,$ad->user_id, $ad->image, $ad->created_at, $ad->views));
         }
         return $ads;
     }
@@ -51,7 +56,7 @@ class Ad
         $query = "SELECT * FROM ads WHERE ads.id = '$id';";
         $res = $db->query($query);
         if ($ad = $res->fetch_object()) {
-            return new Ad($ad->id, $ad->title, $ad->description, $ad->image, $ad->user_id);
+            return new Ad($ad->id, $ad->title, $ad->description,$ad->user_id, $ad->image, $ad->created_at, $ad->views);
         }
         return null;
     }
@@ -63,6 +68,8 @@ class Ad
         $db = Db::getInstance();
         $title = mysqli_real_escape_string($db, $title);
         $desc = mysqli_real_escape_string($db, $desc);
+        $created_at = NOW();
+        $views = 0;
         $user_id = $_SESSION["USER_ID"]; // user_id vzamemo iz seje (prijavljen uporabnik)
 
         //Preberemo vsebino (byte array) slike in pripravimo byte array za pisanje v bazo (blob)
@@ -72,7 +79,7 @@ class Ad
             $img_file = mysqli_real_escape_string($db, $img_file);
         }
 
-        $query = "INSERT INTO ads (title, description, user_id, image) VALUES('$title', '$desc', '$user_id', '$img_file');";
+        $query = "INSERT INTO ads (title, description, user_id, image, created_at, views) VALUES('$title', '$desc', '$user_id', '$img_file', '$created_at', '$views');";
         if ($db->query($query)) {
             $id = mysqli_insert_id($db); // preberemo id, ki ga je dobil vstavljen oglas
             return Ad::find($id); // preberemo nov oglas iz baze in ga vrnemo controllerju
@@ -82,21 +89,25 @@ class Ad
     }
 
     // Metoda, ki posodobi obstoječ oglas v bazi
-    public function update($title, $desc, $img)
+    public function update($title, $desc, $img, $views)
     {
         $db = Db::getInstance();
         $id = mysqli_real_escape_string($db, $this->id);
         $title = mysqli_real_escape_string($db, $title);
         $desc = mysqli_real_escape_string($db, $desc);
+        $created_at = NOW();
+        $views = mysqli_real_escape_string($db, $views);
 
         // Preverimo, če je uporabnik zamenjal sliko in sestavimo ustrezen query
         $query = "";
         if ($img && $img["tmp_name"] != "") {
             $img_file = file_get_contents($img["tmp_name"]);
             $img_file = mysqli_real_escape_string($db, $img_file);
-            $query = "UPDATE ads SET title = '$title', description = '$desc', image = '$img_file' WHERE id = '$id'";
+            $query = "UPDATE ads SET title = '$title', description = '$desc', image = '$img_file', created_at = '$created_at', view = '$views'
+                      WHERE id = '$id'";
         } else {
-            $query = "UPDATE ads SET title = '$title', description = '$desc' WHERE id = '$id'";
+            $query = "UPDATE ads SET title = '$title', description = '$desc', created_at = '$created_at', view = '$views'
+                      WHERE id = '$id'";
         }
         if ($db->query($query)) {
             return Ad::find($id); //iz baze pridobimo posodobljen oglas in ga vrnemo controllerju

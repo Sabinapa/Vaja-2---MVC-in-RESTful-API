@@ -72,4 +72,10 @@ class comments_controller
         echo json_encode($comment);
     }
 
+    public function lastFive()
+    {
+        $comment = comment::lastFive();
+        echo json_encode($comment);
+    }
+
 }
