@@ -119,7 +119,7 @@ $img_data = base64_encode($ad->image)
                 //console.log(id);
 
                 if (comment.user.id == id || userId == id) { //prijavljeni uporabnik == uporabnik komentara || prijavljeni uporabnik == lastnik oglasa
-                    var deleteBtn = $("<button>").addClass("btn btn-danger delete_ad_btn float-end").text("Izbriši");
+                    var deleteBtn = $("<button>").addClass("btn btn-danger delete_ad_btn float-end").text("Izbriši").data("id", comment.id);
                     var deleteCell = $("<div>").addClass("d-flex justify-content-end mb-3").append(deleteBtn);
                     commentCard.append(deleteCell);
                 }
@@ -148,10 +148,9 @@ $img_data = base64_encode($ad->image)
         }
 
         function deleteClickHandler() {
-            var row = $(this).closest("tr"); //dobimo vrstico kjer klikno uporabnik brisi
-            var id = row.attr("id").substr(8); // odstranimo predpono "comment-"
-            deleteComment(id); //klicemo funkcijo
-            row.remove(); //toto vrrstico zbrisemo
+            var id = $(this).data("id");
+            deleteComment(id);
+            $(this).closest(".card").remove(); // ta vrstica zbriše celotno kartico komentarja
         }
 
         function deleteComment(id) //sprejme id
